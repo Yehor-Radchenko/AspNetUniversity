@@ -1,0 +1,16 @@
+﻿@model MyUniversity.Models.Course
+
+<h2>Course Details</h2>
+<table class ="table">
+    <tr><td><th align="left" width ="150">Title</th><td>@Model.Name</td></td></tr>
+    <tr><td><th align="left" width="150" height="100">Description</th><td width ="450">@Model.Description</td></td></tr>
+</table>
+<table class="table" border="1">
+    <tr><th>Groups</th></tr>
+    @foreach (var item in Model.Groups)
+    {
+        <tr>
+            <td>@item.Name</td>
+        </tr>
+    }
+</table>

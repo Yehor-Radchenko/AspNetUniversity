@@ -1,0 +1,18 @@
+﻿@model MyUniversity.Models.Group
+
+<h2>Edit Group</h2>
+<form asp-action="edit" asp-controller="Group" asp-route-id="@Model.Id">
+    <p>
+        <label asp-for="Name">Name</label><br />
+        <input type="text" asp-for="Name" />
+    </p>
+    <p>
+        <label asp-for="Course">Course</label><br />
+        <select asp-for="Course" asp-items="ViewBag.AllCourses">
+            <option value="">-- Select a Course --</option>
+        </select>
+    </p>
+    <p>
+        <input type="submit" value="Save" />
+    </p>
+</form>

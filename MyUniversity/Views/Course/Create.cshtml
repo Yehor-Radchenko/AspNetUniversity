@@ -1,0 +1,16 @@
+﻿@model MyUniversity.Models.Course
+
+<h2>New course</h2>
+<form asp-action="Create" asp-controller="Course">
+    <p>
+        <label asp-for="Name">Title</label><br />
+        <input type="text" asp-for="Name" />
+    </p>
+    <p>
+        <label asp-for="Description">Description</label><br />
+        <input type="text" asp-for="Description" />
+    </p>
+    <p>
+        <input type="submit" value="Save" />
+    </p>
+</form>

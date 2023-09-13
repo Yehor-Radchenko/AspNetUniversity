@@ -1,0 +1,21 @@
+﻿@model IEnumerable<MyUniversity.Models.Group>
+
+<h2>Groups List</h2>
+<a asp-action="Create">Create</a>
+<table class="table" border="1">
+    <tr><th>Name</th><th>Course</th></tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td width ="70">@item.Name</td>
+            <td width="100">@item.Course.Name</td>
+            <td>
+                <p>
+                    <a asp-action="Details" asp-controller="Group" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Edit" asp-controller="Group" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-controller="Group" asp-route-id="@item.Id">Delete</a>
+                </p>
+            </td>
+        </tr>
+    }
+</table>

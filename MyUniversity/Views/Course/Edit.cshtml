@@ -1,0 +1,16 @@
+﻿@model MyUniversity.Models.Course
+
+<h2>Edit Course</h2>
+<form asp-action="edit" asp-controller="course" asp-route-id="@Model.Id">
+    <p>
+        <label asp-for="Name">Name</label><br />
+        <input type="text" asp-for="Name" />
+    </p>
+    <p>
+        <label asp-for="Description">Description</label><br />
+        <input type="text" asp-for="Description" />
+    </p>
+    <p>
+        <input type="submit" value="Save" />
+    </p>
+</form>
