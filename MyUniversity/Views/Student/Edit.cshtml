@@ -1,0 +1,21 @@
+﻿@model MyUniversity.Models.Student
+
+<h2>Edit Student</h2>
+<form asp-action="edit" asp-controller="Student" asp-route-id="@Model.Id">
+    <p>
+        <label asp-for="FirstName">First name</label><br />
+        <input type="text" asp-for="FirstName" />
+        <br />
+        <label asp-for="LastName">Last name</label><br />
+        <input type="text" asp-for="LastName" />
+    </p>
+    <p>
+        <label asp-for="GroupId">Group</label><br />
+        <select asp-for="GroupId" asp-items="ViewBag.AllGroups">
+            <option value="">-- Select a Group --</option>
+        </select>
+    </p>
+    <p>
+        <input type="submit" value="Save" />
+    </p>
+</form>
