@@ -2,19 +2,26 @@ using MyUniversity.Data;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using MyUniversity.Services;
+using MyUniversity.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<MyUniversityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string not found.")));
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 var app = builder.Build();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Course}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 if (!app.Environment.IsDevelopment())
 {

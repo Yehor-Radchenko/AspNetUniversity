@@ -2,19 +2,21 @@
 using Microsoft.EntityFrameworkCore;
 using MyUniversity.Data;
 using MyUniversity.Models;
+using MyUniversity.Services;
+using MyUniversity.Services.Interfaces;
 
 namespace MyUniversity.Controllers
 {
     public class CourseController : Controller
     {
-        MyUniversityDbContext _context;
-        public CourseController(MyUniversityDbContext context)
+        private readonly ICourseService _courseService;
+        public CourseController(ICourseService service)
         {
-            _context = context;
+            _courseService = service;
         }
         public IActionResult Index()
         {
-            return View(_context.Courses.ToList());
+            return View(_courseService.GetAll());
         }
 
         [HttpGet]
@@ -24,58 +26,49 @@ namespace MyUniversity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Course course)
+        public IActionResult Create(Course course)
         {
-            _context.Courses.Add(course);
-            await _context.SaveChangesAsync();
+            _courseService.Create(course);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id is not null)
             {
-                Course course = new Course { Id = id.Value };
-                _context.Entry(course).State = EntityState.Deleted;
-                await _context.SaveChangesAsync();
+                _courseService.Delete(id);
                 return RedirectToAction("Index");
             }
             return NotFound();
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
-            if (id != null)
+            if (id is not null)
             {
-                Course? course = await _context.Courses.FirstOrDefaultAsync(p => p.Id == id);
-                if (course != null) 
+                Course? course = _courseService.GetById(id);
+                if (course is not null) 
                     return View(course);
             }
             return NotFound();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Course course)
+        public IActionResult Edit(Course course)
         {
-            _context.Courses.Update(course);
-            await _context.SaveChangesAsync();
+            _courseService.Update(course);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
-            if (id != null)
+            if (id is not null)
             {
-                Course? course = await _context.Courses.FirstOrDefaultAsync(p => p.Id == id);
-                List<Group> groups = _context.Groups.Where(g => g.Course.Id == id).ToList();
-                if (course != null)
-                {
-                    course.Groups = groups;
-                    return View(course);
-                }
+                Course course = _courseService.GetById(id);
+                return View(course);
             }
             return NotFound();
         }

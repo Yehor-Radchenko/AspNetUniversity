@@ -3,65 +3,59 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyUniversity.Data;
 using MyUniversity.Models;
+using MyUniversity.Services;
+using MyUniversity.Services.Interfaces;
 
 namespace MyUniversity.Controllers
 {
     public class GroupController : Controller
     {
-        MyUniversityDbContext _context;
-        public GroupController(MyUniversityDbContext context)
+        private readonly IGroupService _groupService;
+        public GroupController(IGroupService service)
         {
-            _context = context;
+            _groupService = service;
         }
         public IActionResult Index()
         {
-            return View(_context.Groups
-            .Include(g => g.Course)
-            .ToList());
+            return View(_groupService.GetAll());
         }
 
-        public async Task<IActionResult> Create(Group group)
+        [HttpGet]
+        public IActionResult Create()
         {
-            _context.Groups.Add(group);
-            await _context.SaveChangesAsync();
+            ViewBag.AllCourses = _groupService.GetCourseSelectList();
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(Group group)
+        {
+           _groupService.Create(group);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id is not null)
             {
-                Group group = new Group { Id = id.Value };
-                _context.Entry(group).State = EntityState.Deleted;
-                await _context.SaveChangesAsync();
+                _groupService.Delete(id);
                 return RedirectToAction("Index");
             }
             return NotFound();
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id != null)
             {
 
-                Group? group = await _context.Groups.FirstOrDefaultAsync(p => p.Id == id);
+                Group? group = _groupService.GetById(id);
                 
                 if (group is not null)
                 {
-                    var allCourses = _context.Courses.ToList();
-
-                    // Create a SelectListItem list for the dropdown
-                    var courseSelectList = allCourses.Select(course => new SelectListItem
-                    {
-                        Text = course.Name,
-                        Value = course.Id.ToString(),
-                        Selected = course.Id == group.Course.Id
-                    }).ToList();
-
-                    ViewBag.AllCourses = courseSelectList;
-
+                    ViewBag.AllCourses = _groupService.GetCourseSelectList(group);
                     return View(group);
                 }
             }
@@ -69,20 +63,19 @@ namespace MyUniversity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Group group)
+        public IActionResult Edit(Group group)
         {
-            _context.Groups.Update(group);
-            await _context.SaveChangesAsync();
+            _groupService.Update(group);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id != null)
             {
-                Group? group = await _context.Groups.FirstOrDefaultAsync(p => p.Id == id);
-                List<Student> students = _context.Students.Where(g => g.Group.Id == id).ToList();
+                Group? group = _groupService.GetById(id);
+                List<Student> students = _groupService.GetStudents(group);
                 if (group != null)
                 {
                     group.Students = students;
