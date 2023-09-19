@@ -14,36 +14,36 @@ namespace MyUniversity.Services
         {
             _context = context;
         }
-        public void Create(Student model)
+        public async Task Create(Student model)
         {
             if(model.FirstName.IsNullOrEmpty() || model.LastName.IsNullOrEmpty())
             {
                 throw new Exception("Students name and surname can't be empty.");
             }
             _context.Students.Add(model);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(int? id)
+        public async Task Delete(int? id)
         {
             Student student = new Student { Id = id.Value };
             _context.Entry(student).State = EntityState.Deleted;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<Student> GetAll()
+        public async Task<IEnumerable<Student>> GetAll()
         {
-            return _context.Students.Include(s => s.Group).ToList();
+            return await  _context.Students.Include(s => s.Group).ToListAsync();
         }
 
-        public Student? GetById(int? id)
+        public async Task<Student?> GetById(int? id)    
         {
-            return _context.Students.FirstOrDefault(p => p.Id == id);
+            return await _context.Students.FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public List<SelectListItem> GetGroupSelectList(Student? student)
+        public async Task<List<SelectListItem>> GetGroupSelectList(Student? student)
         {
-            var allGroups = _context.Groups.ToList();
+            var allGroups = await _context.Groups.ToListAsync();
 
             // Create a SelectListItem list for the dropdown
             return allGroups.Select(group => new SelectListItem
@@ -54,9 +54,9 @@ namespace MyUniversity.Services
             }).ToList();
         }
 
-        public List<SelectListItem> GetGroupSelectList()
+        public async Task<List<SelectListItem>> GetGroupSelectList()
         {
-            var allGroups = _context.Groups.ToList();
+            var allGroups = await  _context.Groups.ToListAsync();
 
             return allGroups.Select(group => new SelectListItem
             {
@@ -65,10 +65,10 @@ namespace MyUniversity.Services
             }).ToList();
         }
 
-        public void Update(Student expectedEntityValues)
+        public async Task Update(Student expectedEntityValues)
         {
             _context.Students.Update(expectedEntityValues);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

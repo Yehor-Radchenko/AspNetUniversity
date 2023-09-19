@@ -13,45 +13,45 @@ namespace MyUniversity.Services
         {
             _context = context;
         }
-        public void Create(Group model)
+        public async Task Create(Group model)
         {
             if (_context.Groups.FirstOrDefault(c => c.Name == model.Name) is not null)
             {
                 throw new Exception("Group with this name is already exists.");
             }
             _context.Groups.Add(model);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(int? id)
+        public async Task Delete(int? id)
         {
             Group group = new Group { Id = id.Value };
             _context.Entry(group).State = EntityState.Deleted;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<Group> GetAll()
+        public async Task<IEnumerable<Group>> GetAll()
         {
-            return _context.Groups.Include(g => g.Course).ToList();
+            return await _context.Groups.Include(g => g.Course).ToListAsync();
         }
 
-        public Group? GetById(int? id)
+        public async Task<Group?> GetById(int? id)
         {
-            Group? group = _context.Groups.FirstOrDefault(p => p.Id == id);
-            List<Student> students = _context.Students.Where(g => g.Group.Id == id).ToList();
+            Group? group = await _context.Groups.FirstOrDefaultAsync(p => p.Id == id);
+            List<Student> students = await _context.Students.Where(g => g.Group.Id == id).ToListAsync();
             group.Students = students;
             return group;
         }
 
-        public void Update(Group expectedEntityValues)
+        public async Task Update(Group expectedEntityValues)
         {
             _context.Groups.Update(expectedEntityValues);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public List<SelectListItem> GetCourseSelectList(Group? group)
+        public async Task<List<SelectListItem>> GetCourseSelectList(Group? group)
         {
-            var allCourses = _context.Courses.ToList();
+            var allCourses = await _context.Courses.ToListAsync();
 
             // Create a SelectListItem list for the dropdown
             return allCourses.Select(course => new SelectListItem
@@ -62,14 +62,14 @@ namespace MyUniversity.Services
             }).ToList();
         }
 
-        public List<Student> GetStudents(Group? group)
+        public async Task<List<Student>> GetStudents(Group? group)
         {
-            return _context.Students.Where(s => s.GroupId == group.Id).ToList();
+            return await _context.Students.Where(s => s.GroupId == group.Id).ToListAsync();
         }
 
-        public List<SelectListItem> GetCourseSelectList()
+        public async Task<List<SelectListItem>> GetCourseSelectList()
         {
-            var allCourses = _context.Courses.ToList();
+            var allCourses = await _context.Courses.ToListAsync();
 
             return allCourses.Select(course => new SelectListItem
             {

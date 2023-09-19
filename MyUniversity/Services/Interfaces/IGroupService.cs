@@ -5,13 +5,13 @@ namespace MyUniversity.Services.Interfaces
 {
     public interface IGroupService
     {
-        public IEnumerable<Group> GetAll();
-        public void Create(Group model);
-        public Group? GetById(int? id);
-        public void Update(Group expectedEntityValues);
-        public void Delete(int? id);
-        public List<SelectListItem> GetCourseSelectList(Group? group);
-        public List<SelectListItem> GetCourseSelectList();
-        public List<Student> GetStudents(Group? group);
+        public Task<IEnumerable<Group>> GetAll();
+        public Task Create(Group model);
+        public Task<Group?> GetById(int? id);
+        public Task Update(Group expectedEntityValues);
+        public Task Delete(int? id);
+        public Task<List<SelectListItem>> GetCourseSelectList(Group? group);
+        public Task<List<SelectListItem>> GetCourseSelectList();
+        public Task<List<Student>> GetStudents(Group? group);
     }
 }

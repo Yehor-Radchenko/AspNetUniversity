@@ -4,10 +4,10 @@ namespace MyUniversity.Services.Interfaces
 {
     public interface ICourseService
     {
-        public IEnumerable<Course> GetAll();
-        public void Create(Course model);
-        public Course? GetById(int? id);
-        public void Update(Course expectedEntityValues);
-        public void Delete(int? id);
+        public Task<IEnumerable<Course>> GetAll();
+        public Task Create(Course model);
+        public Task<Course?> GetById(int? id);
+        public Task Update(Course expectedEntityValues);
+        public Task Delete(int? id);
     }
 }

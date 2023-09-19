@@ -15,47 +15,47 @@ namespace MyUniversity.Controllers
         {
             _groupService = service;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_groupService.GetAll());
+            return View(await _groupService.GetAll());
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.AllCourses = _groupService.GetCourseSelectList();
+            ViewBag.AllCourses = await _groupService.GetCourseSelectList();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Group group)
+        public async Task<IActionResult> Create(Group group)
         {
-           _groupService.Create(group);
+           await _groupService.Create(group);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id is not null)
             {
-                _groupService.Delete(id);
+                await _groupService.Delete(id);
                 return RedirectToAction("Index");
             }
             return NotFound();
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id != null)
             {
 
-                Group? group = _groupService.GetById(id);
+                Group? group = await _groupService.GetById(id);
                 
                 if (group is not null)
                 {
-                    ViewBag.AllCourses = _groupService.GetCourseSelectList(group);
+                    ViewBag.AllCourses = await _groupService.GetCourseSelectList(group);
                     return View(group);
                 }
             }
@@ -63,19 +63,19 @@ namespace MyUniversity.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Group group)
+        public async Task<IActionResult> Edit(Group group)
         {
-            _groupService.Update(group);
+            await _groupService.Update(group);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id != null)
             {
-                Group? group = _groupService.GetById(id);
-                List<Student> students = _groupService.GetStudents(group);
+                Group? group = await _groupService.GetById(id);
+                List<Student> students = await _groupService.GetStudents(group);
                 if (group != null)
                 {
                     group.Students = students;

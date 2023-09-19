@@ -16,47 +16,46 @@ namespace MyUniversity.Controllers
             _studentService = service;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_studentService.GetAll());
+            return View(await _studentService.GetAll());
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.AllGroups = _studentService.GetGroupSelectList();
+            ViewBag.AllGroups = await _studentService.GetGroupSelectList();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Student student)
+        public async Task<IActionResult> Create(Student student)
         {
-            _studentService.Create(student);
+            await _studentService.Create(student);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id is not null)
             {
-                _studentService.Delete(id);
+                await _studentService.Delete(id);
                 return RedirectToAction("Index");
             }
             return NotFound();
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id != null)
             {
-
-                Student? student = _studentService.GetById(id);
+                Student? student = await _studentService.GetById(id);
 
                 if (student is not null)
                 {
-                    ViewBag.AllGroups = _studentService.GetGroupSelectList(student);
+                    ViewBag.AllGroups = await _studentService.GetGroupSelectList(student);
                     return View(student);
                 }
             }
@@ -64,10 +63,11 @@ namespace MyUniversity.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Student student)
+        public async Task<IActionResult> Edit(Student student)
         {
-            _studentService.Update(student);
+            await _studentService.Update(student);
             return RedirectToAction("Index");
         }
+
     }
 }

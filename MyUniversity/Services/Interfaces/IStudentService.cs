@@ -5,12 +5,12 @@ namespace MyUniversity.Services.Interfaces
 {
     public interface IStudentService
     {
-        public IEnumerable<Student> GetAll();
-        public void Create(Student model);
-        public Student? GetById(int? id);
-        public void Update(Student expectedEntityValues);
-        public void Delete(int? id);
-        public List<SelectListItem> GetGroupSelectList(Student? student);
-        public List<SelectListItem> GetGroupSelectList();
+        public Task Create(Student model);
+        public Task Delete(int? id);
+        public Task<IEnumerable<Student>> GetAll();
+        public Task<Student?> GetById(int? id);
+        public Task<List<SelectListItem>> GetGroupSelectList(Student? student);
+        public Task<List<SelectListItem>> GetGroupSelectList();
+        public Task Update(Student expectedEntityValues);
     }
 }

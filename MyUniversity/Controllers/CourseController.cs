@@ -14,9 +14,9 @@ namespace MyUniversity.Controllers
         {
             _courseService = service;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_courseService.GetAll());
+            return View(await _courseService.GetAll());
         }
 
         [HttpGet]
@@ -26,29 +26,29 @@ namespace MyUniversity.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Course course)
+        public async Task<IActionResult> Create(Course course)
         {
-            _courseService.Create(course);
+            await _courseService.Create(course);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id is not null)
             {
-                _courseService.Delete(id);
+                await _courseService.Delete(id);
                 return RedirectToAction("Index");
             }
             return NotFound();
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id is not null)
             {
-                Course? course = _courseService.GetById(id);
+                Course? course = await _courseService.GetById(id);
                 if (course is not null) 
                     return View(course);
             }
@@ -56,18 +56,18 @@ namespace MyUniversity.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Course course)
+        public async Task<IActionResult> Edit(Course course)
         {
-            _courseService.Update(course);
+            await _courseService.Update(course);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id is not null)
             {
-                Course course = _courseService.GetById(id);
+                Course course = await _courseService.GetById(id);
                 return View(course);
             }
             return NotFound();
