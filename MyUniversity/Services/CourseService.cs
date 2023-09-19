@@ -36,15 +36,27 @@ namespace MyUniversity.Services
 
         public async Task<Course?> GetById(int? id)
         {
-            Course? course = await _context.Courses.FirstOrDefaultAsync(p => p.Id == id);
-            List<Group> groups = await _context.Groups.Where(g => g.Course.Id == id).ToListAsync();
-            course.Groups = groups;
+            Course? course = await _context.Courses
+                .Include(c => c.Groups)
+                .FirstOrDefaultAsync(p => p.Id == id);
             return course;
         }
 
         public async Task Update(Course expectedEntityValues)
         {
-            _context.Courses.Update(expectedEntityValues);
+            var existingCourse = await _context.Courses.FindAsync(expectedEntityValues.Id);
+
+            if (existingCourse is null)
+            {
+                throw new ArgumentException("Course with the specified ID does not exist.");
+            }
+            if (await _context.Courses.FirstOrDefaultAsync(c => c.Name == expectedEntityValues.Name) is not null)
+            {
+                throw new Exception("Course with this name is already exists.");
+            }
+
+            _context.Entry(existingCourse).CurrentValues.SetValues(expectedEntityValues);
+
             await _context.SaveChangesAsync();
         }
     }

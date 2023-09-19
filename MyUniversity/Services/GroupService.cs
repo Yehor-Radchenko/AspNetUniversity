@@ -37,14 +37,21 @@ namespace MyUniversity.Services
 
         public async Task<Group?> GetById(int? id)
         {
-            Group? group = await _context.Groups.FirstOrDefaultAsync(p => p.Id == id);
-            List<Student> students = await _context.Students.Where(g => g.Group.Id == id).ToListAsync();
-            group.Students = students;
+            Group? group = await _context.Groups.Include(g => g.Students).FirstOrDefaultAsync(p => p.Id == id);
             return group;
         }
 
         public async Task Update(Group expectedEntityValues)
         {
+            var existingGroup = await _context.Groups.FindAsync(expectedEntityValues.Id);
+            if (existingGroup is null)
+            {
+                throw new ArgumentException("Group with the specified ID does not exist.");
+            }
+            if (await _context.Groups.FirstOrDefaultAsync(c => c.Name == expectedEntityValues.Name) is not null)
+            {
+                throw new Exception("Group with this name is already exists.");
+            }
             _context.Groups.Update(expectedEntityValues);
             await _context.SaveChangesAsync();
         }
