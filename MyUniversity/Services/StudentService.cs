@@ -10,15 +10,17 @@ namespace MyUniversity.Services
     public class StudentService : IStudentService
     {
         private readonly MyUniversityDbContext _context;
+
         public StudentService(MyUniversityDbContext context)
         {
             _context = context;
         }
+
         public async Task Create(Student model)
         {
             if(model.FirstName.IsNullOrEmpty() || model.LastName.IsNullOrEmpty())
             {
-                throw new Exception("Students name and surname can't be empty.");
+                throw new Exception("Students name or surname can't be empty.");
             }
             _context.Students.Add(model);
             await _context.SaveChangesAsync();

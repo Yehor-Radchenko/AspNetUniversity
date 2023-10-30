@@ -13,6 +13,7 @@ namespace MyUniversity.Services
         {
             _context = context;
         }
+
         public async Task Create(Course model)
         {
             if (_context.Courses.FirstOrDefault(c => c.Name == model.Name) is not null)
@@ -29,6 +30,7 @@ namespace MyUniversity.Services
             _context.Entry(course).State = EntityState.Deleted;
             await _context.SaveChangesAsync();
         }
+
         public async Task<IEnumerable<Course>> GetAll()
         {
             return await _context.Courses.ToListAsync();
@@ -50,9 +52,12 @@ namespace MyUniversity.Services
             {
                 throw new ArgumentException("Course with the specified ID does not exist.");
             }
-            if (await _context.Courses.FirstOrDefaultAsync(c => c.Name == expectedEntityValues.Name) is not null)
+
+            var courseWithSameName = await _context.Courses.FirstOrDefaultAsync(c => c.Name == expectedEntityValues.Name && c.Id != expectedEntityValues.Id);
+
+            if (courseWithSameName is not null)
             {
-                throw new Exception("Course with this name is already exists.");
+                throw new Exception("Course with this name already exists.");
             }
 
             _context.Entry(existingCourse).CurrentValues.SetValues(expectedEntityValues);

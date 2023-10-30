@@ -12,6 +12,6 @@ namespace MyUniversity.Services.Interfaces
         public Task Delete(int? id);
         public Task<List<SelectListItem>> GetCourseSelectList(Group? group);
         public Task<List<SelectListItem>> GetCourseSelectList();
-        public Task<List<Student>> GetStudents(Group? group);
+        public Task<List<Student>> GetStudents(int? groupId);
     }
 }

@@ -48,13 +48,14 @@ namespace MyUniversity.Services
             {
                 throw new ArgumentException("Group with the specified ID does not exist.");
             }
-            if (await _context.Groups.FirstOrDefaultAsync(c => c.Name == expectedEntityValues.Name) is not null)
+            if (await _context.Groups.FirstOrDefaultAsync(c => c.Name == expectedEntityValues.Name && c.Id == expectedEntityValues.Id) is not null)
             {
                 throw new Exception("Group with this name is already exists.");
             }
             _context.Groups.Update(expectedEntityValues);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task<List<SelectListItem>> GetCourseSelectList(Group? group)
         {
@@ -69,9 +70,9 @@ namespace MyUniversity.Services
             }).ToList();
         }
 
-        public async Task<List<Student>> GetStudents(Group? group)
+        public async Task<List<Student>> GetStudents(int? groupId)
         {
-            return await _context.Students.Where(s => s.GroupId == group.Id).ToListAsync();
+            return await _context.Students.Where(s => s.GroupId == groupId).ToListAsync();
         }
 
         public async Task<List<SelectListItem>> GetCourseSelectList()

@@ -75,7 +75,7 @@ namespace MyUniversity.Controllers
             if (id != null)
             {
                 Group? group = await _groupService.GetById(id);
-                List<Student> students = await _groupService.GetStudents(group);
+                List<Student> students = await _groupService.GetStudents(id);
                 if (group != null)
                 {
                     group.Students = students;
