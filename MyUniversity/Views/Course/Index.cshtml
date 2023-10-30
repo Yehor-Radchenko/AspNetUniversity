@@ -1,7 +1,8 @@
 ﻿@model IEnumerable<MyUniversity.Models.Course>
  
 <h2>Courses List</h2>
-<a asp-action="Create">Create</a>
+<a asp-action="Create">Create Course</a>
+<br />
 <table class="table" border="1">
      <tr><th>Title</th><th>Description</th></tr>
     @foreach (var item in Model)

@@ -1,7 +1,8 @@
 ﻿@model IEnumerable<MyUniversity.Models.Group>
 
 <h2>Groups List</h2>
-<a asp-action="Create">Create</a>
+<a asp-action="Create">Create Group</a>
+<br />
 <table class="table" border="1">
     <tr><th>Name</th><th>Course</th></tr>
     @foreach (var item in Model)

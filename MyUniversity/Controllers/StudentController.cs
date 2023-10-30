@@ -3,29 +3,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyUniversity.Data;
 using MyUniversity.Models;
+using MyUniversity.Services;
+using MyUniversity.Services.Interfaces;
 
 namespace MyUniversity.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly MyUniversityDbContext _context;
-
-        public StudentController(MyUniversityDbContext context)
+        private readonly IStudentService _studentService;
+        public StudentController(IStudentService service)
         {
-            _context = context;
+            _studentService = service;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_context.Students
-            .Include(s => s.Group)
-            .ToList());
+            return View(await _studentService.GetAll());
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            ViewBag.AllGroups = await _studentService.GetGroupSelectList();
+            return View();
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Create(Student student)
         {
-            _context.Students.Add(student);
-            await _context.SaveChangesAsync();
+            await _studentService.Create(student);
             return RedirectToAction("Index");
         }
 
@@ -34,9 +40,7 @@ namespace MyUniversity.Controllers
         {
             if (id is not null)
             {
-                Student student = new Student { Id = id.Value };
-                _context.Entry(student).State = EntityState.Deleted;
-                await _context.SaveChangesAsync();
+                await _studentService.Delete(id);
                 return RedirectToAction("Index");
             }
             return NotFound();
@@ -47,22 +51,11 @@ namespace MyUniversity.Controllers
         {
             if (id != null)
             {
-
-                Student? student = await _context.Students.FirstOrDefaultAsync(p => p.Id == id);
+                Student? student = await _studentService.GetById(id);
 
                 if (student is not null)
                 {
-                    var allGroups = _context.Groups.ToList();
-
-                    var groupSelectList = allGroups.Select(group => new SelectListItem
-                    {
-                        Text = group.Name,
-                        Value = group.Id.ToString(),
-                        Selected = group.Id == student.Group.Id
-                    }).ToList();
-
-                    ViewBag.AllGroups = groupSelectList;
-
+                    ViewBag.AllGroups = await _studentService.GetGroupSelectList(student);
                     return View(student);
                 }
             }
@@ -72,9 +65,9 @@ namespace MyUniversity.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Student student)
         {
-            _context.Students.Update(student);
-            await _context.SaveChangesAsync();
+            await _studentService.Update(student);
             return RedirectToAction("Index");
         }
+
     }
 }
