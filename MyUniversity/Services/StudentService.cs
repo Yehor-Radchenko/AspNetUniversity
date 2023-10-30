@@ -69,11 +69,13 @@ namespace MyUniversity.Services
 
         public async Task Update(Student expectedEntityValues)
         {
-            var existingGroup = await _context.Groups.FindAsync(expectedEntityValues.Id);
+            var existingGroup = await _context.Groups.FirstOrDefaultAsync(g => g.Id == expectedEntityValues.Id);
+
             if (existingGroup is null)
             {
                 throw new ArgumentException("Group with the specified ID does not exist.");
             }
+
             _context.Students.Update(expectedEntityValues);
             await _context.SaveChangesAsync();
         }
